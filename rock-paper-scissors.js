@@ -1,7 +1,3 @@
-function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
 const possibleChoicesInt = new Map([
   [0, "rock"],
   [1, "paper"],
@@ -16,30 +12,9 @@ const possibleChoicesString = new Map([
 
 const finalTally = []
 
-
-//
-const people = ['Chris', 'Anne', 'Colin', 'Terri', 'Phil', 'Lola', 'Sam', 'Kay', 'Bruce'];
-const admitted = document.querySelector('.admitted');
-const refused = document.querySelector('.refused');
-refused.textContent = 'Refuse: ';
-admitted.textContent = 'Admit: ';
-
-for (const person of people){
-  if (person == "Phil" || person == "Lola"){
-    refused.textContent += " "+person;
-  }
-    admitted.textContent += person;
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
-
-let lastPart = refused.textContent.text.substr(0, refused.textContent.text[length-1]);
-
-console.log(lastPart)
-
-// loop starts here
-
-//
-
-
 
 class RoundReport {
   constructor(playerChoiceInt, computerChoiceInt, result){
@@ -108,8 +83,8 @@ function playRound(wrongInput){
   }
 }
 
-function game(){
-  for (let i = 0; i < 5; i++) {
+function game(rounds){
+  for (let i = 0; i < rounds; i++) {
     playRound()
   }
   for (let i = 0; i < finalTally.length; i++) {
@@ -117,4 +92,38 @@ function game(){
   }
 }
 
-game()
+const message = document.getElementById("message")
+
+const buttons = document.querySelectorAll('button');
+
+buttons.forEach((button) => {
+  button.addEventListener('click', (e) => {
+    const roundReport = determineWinnerAndSpitOutReport(parseInt(e.target.id), randomInt(0,2))
+    console.log(roundReport.message)
+    if (finalTally.length === 5){
+      buttons.forEach( (button)=>{
+        button.remove()
+      })
+      let playerVictories = 0
+      let computerVictories = 0
+      for (const round of finalTally){
+        if (round.result == "Player won") {
+          playerVictories++
+        } else if (round.result == "Computer won"){
+          computerVictories++
+        }
+
+      }
+      if (playerVictories < computerVictories){
+        message.textContent = "You lost"
+      } else if (playerVictories > computerVictories){
+        message.textContent = "You won"
+      } else {
+        message.textContent = "Tie"
+      }
+    } else {
+      message.textContent = roundReport.message
+    }
+  });
+});
+
